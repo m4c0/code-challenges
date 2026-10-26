@@ -1,3 +1,5 @@
+// Partially succeeds. Fails for performance reasons
+
 typedef struct node_s {
     int * route;
     struct node_s * next;
