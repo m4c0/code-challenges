@@ -41,6 +41,8 @@ int* processRequestQueueOperations(int operations_count, char** operations, int 
                 node_t * next = outs->next;
                 free(outs);
                 outs = next;
+
+                size--;
             }
         }
         if (0 == strcmp(cmd, "peek")) {
