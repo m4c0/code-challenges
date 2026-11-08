@@ -6,6 +6,8 @@ static int int_comp(const void * a, const void * b) {
 }
 
 static int find(int * arr, int n, int val) {
+    if (val == 0) return 0;
+    
     // fprintf(stderr, "find %d %d\n", n, val);
     int min = -1;
     for (int i = 0; i < n; i++) {
