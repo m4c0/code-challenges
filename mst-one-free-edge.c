@@ -1,5 +1,3 @@
-// partial. Times out in 2 cases
-
 static int comp_edge(const void * a, const void * b) {
     const int * const * aa = a;
     const int * const * bb = b;
@@ -9,10 +7,11 @@ static int comp_edge(const void * a, const void * b) {
     return ca < cb ? -1 : 1;
 }
 
-static int ind_jump(int * cids, int * cind, int n) {
-    int i = cids[n];
-    while (i != cind[i]) i = cind[i];
-    return i;
+static int ind_jump(int * cind, int i) {
+    if (i == cind[i]) return i;
+    int r = ind_jump(cind, cind[i]);
+    cind[i] = r;
+    return r;
 }
 
 long calculateMinimumSpanningTreeWeightWithFreeEdge(int n, int m, int edges_rows, int edges_columns, int** edges) {
@@ -31,8 +30,8 @@ long calculateMinimumSpanningTreeWeightWithFreeEdge(int n, int m, int edges_rows
     int last = 0;
     for (int i = 0; i < m; i++) {
         int * e = edges[i];
-        int ca = ind_jump(cids, cind, e[0]);
-        int cb = ind_jump(cids, cind, e[1]);
+        int ca = ind_jump(cind, cids[e[0]]);
+        int cb = ind_jump(cind, cids[e[1]]);
         
         if (ca == cb) {
             continue; // cycle
