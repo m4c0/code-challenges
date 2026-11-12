@@ -1,4 +1,3 @@
-// incomplete - pass 11 of 15, missing eviction
 #define MAP_LEN 193939 // prime
 
 typedef struct prio_s {
@@ -82,9 +81,20 @@ int* simulatePriorityCache(int capacity, int numOperations, int operationTypes_c
                 
                 d_size++;
             } else {
-                // p = &data[0];
+                p = &data[0];
+                if (map[p->key] == p) map[p->key] = p->next;
+                if (p->prev) p->prev->next = p->next;
+                if (p->next) p->next->prev = p->prev;
                 
-                // evict
+                p->key   = keys[i];
+                p->value = values[i];
+                p->prio  = priorities[i];
+                p->prev  = NULL;
+
+                int k = keys[i] % MAP_LEN;
+                p->next = map[k];
+                if (p->next) p->next->prev = p;
+                map[k] = p;
             }
         }
         if (0 == strcmp("updatePriority", operationTypes[i])) {
