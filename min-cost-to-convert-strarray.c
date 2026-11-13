@@ -1,23 +1,26 @@
-// pass 13/15 cases
-
-static int levenshtein(const char * a, const char * b) {
-    while (*a && *b) {
-        if (*a != *b) break;
+static long levenshtein(const char * a, const char * b) {
+    while (*a && *b && *a == *b) {
         a++;
         b++;
     }
-    int al = strlen(a);
-    int bl = strlen(b);
+    
+    long al = strlen(a);
+    long bl = strlen(b);
+    while (al > 0 && bl > 0 && a[al - 1] == b[bl - 1]) {
+        al--;
+        bl--;
+    }
+    
     if (al == 0) return bl;
     if (bl == 0) return al;
     
-    static int * c0 = NULL, * c1 = NULL;
-    if (!c0) c0 = malloc(1001 * sizeof(int));
-    if (!c1) c1 = malloc(1001 * sizeof(int));
+    static long * c0 = NULL, * c1 = NULL;
+    if (!c0) c0 = malloc(1001 * sizeof(long));
+    if (!c1) c1 = malloc(1001 * sizeof(long));
     
-    for (int i = 0; i < al; i++) c0[i] = i;
+    for (int i = 0; i <= al; i++) c0[i] = i;
     
-    int d = 0;
+    long d = 0;
     for (int j = 1; j <= bl; j++) {
         c1[0] = j;
         for (int i = 1; i <= al; i++) {
@@ -30,7 +33,7 @@ static int levenshtein(const char * a, const char * b) {
             c1[i] = d;
         }
             
-        int * tmp = c0;
+        long * tmp = c0;
         c0 = c1;
         c1 = tmp;
     }
@@ -39,20 +42,20 @@ static int levenshtein(const char * a, const char * b) {
 }
 
 long minTransformationCost(int A_count, char** A, int B_count, char** B, int insertCost, int deleteCost) {
-    if (A_count == 0) return insertCost * B_count;
-    if (B_count == 0) return deleteCost * A_count;
+    if (A_count == 0) return (long)insertCost * B_count;
+    if (B_count == 0) return (long)deleteCost * A_count;
     
     long * c0 = calloc(A_count + 1, sizeof(long));
     long * c1 = calloc(A_count + 1, sizeof(long));
     
-    for (int i = 1; i <= A_count; i++) {
-        c0[i] = i * insertCost;
+    for (long i = 1; i <= A_count; i++) {
+        c0[i] = i * deleteCost;
     }
 
     long d = 0;    
-    for (int j = 1; j <= B_count; j++) {
-        c1[0] = j * deleteCost;
-        for (int i = 1; i <= A_count; i++) {
+    for (long j = 1; j <= B_count; j++) {
+        c1[0] = j * insertCost;
+        for (long i = 1; i <= A_count; i++) {
             d = levenshtein(A[i - 1], B[j - 1]) + c0[i - 1];
             
             long du = c0[i] + insertCost;
