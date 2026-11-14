@@ -18,7 +18,7 @@ static inline int hkey(int i) {
     return i % HASH_LEN;
 }
 static void add(node_t ** map, int idx, int rd) {
-    int p = hkey(idx);
+    int p = hkey(rd);
 
     node_t * n = malloc(sizeof(node_t));
     n->index   = idx;
@@ -37,7 +37,7 @@ int** findZeroSumTripletsInWindow(int readings_count, int* readings, int windowS
     }
 
     node_t ** map = calloc(HASH_LEN, sizeof(node_t *));
-    for (int i = 1; i <= readings_count - 2; i++) {
+    for (int i = 0; i <= readings_count - 1; i++) {
         add(map, i, readings[i]);
     }
     
