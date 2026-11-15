@@ -21,3 +21,21 @@ bool isNonTrivialRotation(char* s1, char* s2) {
     return false;
 }
 
+// Or, assuming strstr will be faster than O(n2)
+
+bool isNonTrivialRotation(char* s1, char* s2) {
+    if (0 == strcmp(s1, s2)) return false;
+    
+    int l1 = strlen(s1);
+    int l2 = strlen(s2);
+    if (l1 != l2) return false;
+
+    char * tmp = malloc(2 * l2 + 1);
+    strcpy(tmp, s2);
+    strcpy(tmp + l2, s2);
+
+    bool res = strstr(tmp, s1) != NULL;
+    free(tmp);
+    return res;
+}
+
